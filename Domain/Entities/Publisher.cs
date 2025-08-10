@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Domain.Entities
 {
@@ -12,6 +13,7 @@ namespace Domain.Entities
         public string Name { get; set; }
 
         // relación con libros
+        [JsonIgnore] //tmb podria haberlo configurado globalmente en program.cs
         public ICollection<Book> Books { get; set; } = new List<Book>();
     }
 }

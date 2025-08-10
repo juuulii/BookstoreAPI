@@ -18,6 +18,9 @@ namespace Domain.Entities
 
         public int Stock { get; set; }
 
+        public bool IsDeleted { get; set; } = false; //para hacer la baja logica
+
+
         // claves foráneas
         public int AuthorId { get; set; }
         public int PublisherId { get; set; }
@@ -39,6 +42,7 @@ namespace Domain.Entities
             PublisherId = publisherId;
             CategoryId = categoryId;
         }
+
     }
 
 }

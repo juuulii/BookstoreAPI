@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace Domain.Entities
 {
@@ -11,6 +12,7 @@ namespace Domain.Entities
         public string Nationality { get; set; }
 
         // colección de libros del autor
+        [JsonIgnore] // para q no se hagan ciclos
         public ICollection<Book> Books { get; set; } = new List<Book>();
 
     }

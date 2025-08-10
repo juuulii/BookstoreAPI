@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Domain.Entities
 {
@@ -11,6 +12,7 @@ namespace Domain.Entities
         [MaxLength(100)]
         public string Name { get; set; }
 
+        [JsonIgnore]
         public ICollection<Book> Books { get; set; } = new List<Book>(); //relacion con libros
     }
 }

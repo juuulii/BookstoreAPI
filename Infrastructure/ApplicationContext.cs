@@ -11,6 +11,8 @@ namespace Infraestructure
         public DbSet<Publisher> Publishers { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Book> Books { get; set; }
+        public DbSet<Order> Orders { get; set; }
+
 
         private readonly bool isTestingEnvironment;
 
@@ -43,6 +45,19 @@ namespace Infraestructure
                 .HasOne(b => b.Category)
                 .WithMany(c => c.Books)
                 .HasForeignKey(b => b.CategoryId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // relaciones Order -> Book / Cliente
+            modelBuilder.Entity<Order>()
+                .HasOne(o => o.Book)
+                .WithMany() // un libro puede estar en varios pedidos
+                .HasForeignKey(o => o.BookId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Order>()
+                .HasOne(o => o.Cliente)
+                .WithMany() // un cliente puede tener varios pedidos
+                .HasForeignKey(o => o.ClienteId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             base.OnModelCreating(modelBuilder);

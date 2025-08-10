@@ -35,12 +35,17 @@ namespace BookstoreAPI.Controllers
                     Id = b.Id,
                     Title = b.Title,
                     Price = b.Price,
-                    Stock = b.Stock
+                    Stock = b.Stock,
+                    AuthorName = b.Author?.Name, // por si viene null
+                    AuthorLastName = b.Author?.LastName,
+                    PublisherName = b.Publisher?.Name,
+                    CategoryName = b.Category?.Name
                 }).ToList()
             });
 
             return Ok(authorDtos);
         }
+
 
         // GET: api/authors/5
         [HttpGet("{id}")]
