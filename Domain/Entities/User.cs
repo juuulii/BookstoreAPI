@@ -23,7 +23,7 @@ namespace Domain.Entities
     public enum UserRole
     {
         Guest,
-        Client,
+        Cliente,
         Admin
     }
 }
