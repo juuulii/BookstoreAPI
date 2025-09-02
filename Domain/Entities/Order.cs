@@ -12,4 +12,4 @@
         public int Cantidad { get; set; }
         public DateTime Fecha { get; set; } = DateTime.UtcNow;
     }
-}
+} 

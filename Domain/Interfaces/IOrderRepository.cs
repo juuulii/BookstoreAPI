@@ -6,6 +6,8 @@ namespace Domain.Interfaces
     {
         Task<Order> CreateAsync(Order order);
         Task<Book> GetBookByIdAsync(int bookId);
-        Task SaveChangesAsync();
+        Task UpdateBookAsync(Book book);
+        Task<List<User>> GetClientsByBookIdAsync(int bookId);
     }
 }
+

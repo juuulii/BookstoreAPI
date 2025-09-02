@@ -24,6 +24,7 @@ namespace Application.Services
 
             // Descontar stock
             book.Stock -= cantidad;
+            await _orderRepository.UpdateBookAsync(book);
 
             var order = new Order
             {
@@ -33,9 +34,12 @@ namespace Application.Services
                 Fecha = DateTime.UtcNow
             };
 
-            await _orderRepository.CreateAsync(order);
+            return await _orderRepository.CreateAsync(order);
+        }
 
-            return order;
+        public async Task<List<User>> GetClientsByBookIdAsync(int bookId)
+        {
+            return await _orderRepository.GetClientsByBookIdAsync(bookId);
         }
     }
 }

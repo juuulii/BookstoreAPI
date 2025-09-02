@@ -1,7 +1,9 @@
-﻿using Application.Services;
+﻿using Application.Dtos;
+using Application.Services;
 using Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace BookstoreAPI.Controllers
 {
@@ -18,16 +20,31 @@ namespace BookstoreAPI.Controllers
 
         [HttpPost("create")]
         [Authorize(Roles = "Cliente,Admin")]
-        public async Task<IActionResult> CreateOrder(int bookId, int cantidad)
+        public async Task<IActionResult> CreateOrder([FromBody] CreateOrderRequest request)
         {
             try
             {
                 // Obtener el ID del usuario desde el token
-                var clienteId = int.Parse(User.Claims.First(c => c.Type == "Id").Value);
+                var clienteId = int.Parse(User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value);
 
-                var order = await _orderService.CreateOrderAsync(clienteId, bookId, cantidad);
+                var order = await _orderService.CreateOrderAsync(clienteId, request.BookId, request.Cantidad);
 
                 return Ok(order);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { mensaje = ex.Message });
+            }
+        }
+
+        [HttpGet("clients/{bookId}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetClientsByBookId(int bookId)
+        {
+            try
+            {
+                var clients = await _orderService.GetClientsByBookIdAsync(bookId);
+                return Ok(clients);
             }
             catch (Exception ex)
             {

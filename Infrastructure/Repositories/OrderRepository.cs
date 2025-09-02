@@ -25,10 +25,20 @@ namespace Infraestructure.Repositories
             return await _context.Books.FirstOrDefaultAsync(b => b.Id == bookId);
         }
 
-        public async Task SaveChangesAsync()
+        public async Task UpdateBookAsync(Book book)
         {
+            _context.Books.Update(book);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<List<User>> GetClientsByBookIdAsync(int bookId)
+        {
+            return await _context.Orders
+                .Where(o => o.BookId == bookId)
+                .Include(o => o.Cliente)
+                .Select(o => o.Cliente)
+                .Distinct()
+                .ToListAsync();
         }
     }
 }
-
