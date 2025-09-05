@@ -10,7 +10,7 @@ namespace Domain.Interfaces
     public interface IUserRepository
     {
         User? Get(string name);
-        List<User> Get();
+        List<User> Get(bool includeDeleted = false);
         User GetById(int id);
         int AddUser(User user);
         void Update(User user);

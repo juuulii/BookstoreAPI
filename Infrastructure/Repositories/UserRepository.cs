@@ -20,8 +20,10 @@ namespace Infraestructure.Repositories
             return _context.Users.FirstOrDefault(u => u.Name == name && !u.IsDeleted);
         }
 
-        public List<User> Get()
+        public List<User> Get(bool includeDeleted = false)
         {
+            if (includeDeleted)
+                return _context.Users.ToList();
             return _context.Users.Where(u => !u.IsDeleted).ToList();
         }
 

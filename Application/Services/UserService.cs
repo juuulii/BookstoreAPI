@@ -29,9 +29,9 @@ namespace Application.Services
             };
         }
 
-        public List<User> Get()
+        public List<User> Get(bool includeDeleted = false)
         {
-            return _repository.Get();
+            return _repository.Get(includeDeleted);
         }
 
         public UserModel GetById(int id)
@@ -49,17 +49,19 @@ namespace Application.Services
             };
         }
 
-        public void Update(UserModel user)
+        public void Update(int id, UserForUpdateRequest request)
         {
-            _repository.Update(new User()
-            {
-                Email = user.Email,
-                Password = user.Password,
-                Role = user.Role,
-                Id = user.Id,
-                Name = user.Name
-            });
+            var existingUser = _repository.GetById(id);
+            if (existingUser == null) return;
+
+            existingUser.Name = request.Name;
+            existingUser.Email = request.Email;
+            existingUser.Password = request.Password;
+            existingUser.Role = request.Role;
+
+            _repository.Update(existingUser);
         }
+
 
         public int AddUser(UserForAddRequest request)
         {

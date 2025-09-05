@@ -77,6 +77,52 @@ builder.Services.AddScoped<OrderService>();
 
 var app = builder.Build();
 
+// 🔹 Middleware global de errores
+app.UseExceptionHandler(errorApp =>
+{
+    errorApp.Run(async context =>
+    {
+        context.Response.StatusCode = 500;
+        context.Response.ContentType = "application/json";
+
+        var error = context.Features.Get<Microsoft.AspNetCore.Diagnostics.IExceptionHandlerFeature>();
+        if (error != null)
+        {
+            var response = new
+            {
+                message = "Ocurrió un error inesperado en el servidor.",
+                detail = error.Error.Message // ⚠️ en producción podés quitar esto para no mostrar detalles internos
+            };
+            await context.Response.WriteAsJsonAsync(response);
+        }
+    });
+});
+
+// 🔹 Manejo global de códigos de estado (401, 403, 404, etc.)
+app.UseStatusCodePages(async context =>
+{
+    var response = context.HttpContext.Response;
+
+    response.ContentType = "application/json";
+
+    // Respuestas personalizadas
+    switch (response.StatusCode)
+    {
+        case 401:
+            await response.WriteAsJsonAsync(new { message = "No autorizado. Debes iniciar sesión." });
+            break;
+        case 403:
+            await response.WriteAsJsonAsync(new { message = "Acceso denegado. No tienes permisos suficientes." });
+            break;
+        case 404:
+            await response.WriteAsJsonAsync(new { message = "Recurso no encontrado." });
+            break;
+        default:
+            await response.WriteAsJsonAsync(new { message = $"Error {response.StatusCode}" });
+            break;
+    }
+});
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

@@ -19,6 +19,7 @@ namespace BookstoreAPI.Controllers
         }
 
         [HttpGet("{name}")]
+        [Authorize(Roles = "Admin")] 
         public IActionResult Get(string name)
         {
             var user = _service.Get(name);
@@ -26,23 +27,25 @@ namespace BookstoreAPI.Controllers
             return Ok(user);
         }
 
-        [HttpPut("update-email")]
-        public IActionResult UpdateEmail([FromBody] string email)
+        [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")] 
+        public IActionResult Update(int id, [FromBody] UserForUpdateRequest body)
         {
-            int userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
-            var user = _service.GetById(userId);
+            var user = _service.GetById(id);
             if (user == null) return NotFound();
 
-            user.Email = email;
-            _service.Update(user);
-            return Ok(user);
+            _service.Update(id, body);
+            return Ok("Usuario actualizado correctamente.");
         }
 
+
         [HttpGet]
-        public IActionResult Get()
+        [Authorize(Roles = "Admin")] 
+        public IActionResult Get([FromQuery] bool includeDeleted = false)
         {
-            return Ok(_service.Get());
+            return Ok(_service.Get(includeDeleted));
         }
+
 
         [HttpPost]
         [AllowAnonymous] // 👈 importante para registrarse
