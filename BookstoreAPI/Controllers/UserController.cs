@@ -1,9 +1,8 @@
 ﻿using Application.Dtos;
 using Application.Services;
-using Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 using System.Security.Claims;
 
 namespace BookstoreAPI.Controllers
@@ -22,16 +21,21 @@ namespace BookstoreAPI.Controllers
         [HttpGet("{name}")]
         public IActionResult Get(string name)
         {
-            return Ok(_service.Get(name));
+            var user = _service.Get(name);
+            if (user == null) return NotFound();
+            return Ok(user);
         }
 
-        [HttpPut]
-        public IActionResult UpdateEmail(string email)
+        [HttpPut("update-email")]
+        public IActionResult UpdateEmail([FromBody] string email)
         {
             int userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
             var user = _service.GetById(userId);
+            if (user == null) return NotFound();
+
+            user.Email = email;
             _service.Update(user);
-            return Ok();
+            return Ok(user);
         }
 
         [HttpGet]
@@ -41,9 +45,18 @@ namespace BookstoreAPI.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous] // 👈 importante para registrarse
         public IActionResult Add([FromBody] UserForAddRequest body)
         {
             return Ok(_service.AddUser(body));
+        }
+
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
+        public IActionResult Delete(int id)
+        {
+            _service.Delete(id);
+            return NoContent();
         }
     }
 }

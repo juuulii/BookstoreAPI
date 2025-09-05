@@ -11,6 +11,7 @@ namespace Domain.Entities
         [Required]
         [MaxLength(100)]
         public string Name { get; set; }
+        public bool IsDeleted { get; set; } = false;
 
         [JsonIgnore]
         public ICollection<Book> Books { get; set; } = new List<Book>(); //relacion con libros

@@ -10,6 +10,7 @@ namespace Domain.Entities
         public string Name { get; set; }
         public string LastName { get; set; }
         public string Nationality { get; set; }
+        public bool IsDeleted { get; set; } = false;
 
         // colección de libros del autor
         [JsonIgnore] // para q no se hagan ciclos

@@ -17,12 +17,12 @@ namespace Domain.Entities
         public string Email { get; set; }
         public UserRole Role { get; set; }
         public string Password { get; set; }
+        public bool IsDeleted { get; set; } = false;
 
     }
 
     public enum UserRole
     {
-        Guest,
         Cliente,
         Admin
     }

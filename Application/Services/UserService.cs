@@ -1,11 +1,7 @@
 ﻿using Application.Dtos;
 using Domain.Entities;
 using Domain.Interfaces;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Services
 {
@@ -21,15 +17,16 @@ namespace Application.Services
         public UserModel Get(string name)
         {
             var user = _repository.Get(name);
-            UserModel model = new UserModel()
+            if (user == null) return null;
+
+            return new UserModel()
             {
-                Name = name,
+                Name = user.Name,
                 Email = user.Email,
                 Password = user.Password,
                 Role = user.Role,
                 Id = user.Id
             };
-            return model;
         }
 
         public List<User> Get()
@@ -40,15 +37,16 @@ namespace Application.Services
         public UserModel GetById(int id)
         {
             var user = _repository.GetById(id);
-            UserModel model = new()
+            if (user == null) return null;
+
+            return new UserModel()
             {
                 Email = user.Email,
                 Password = user.Password,
                 Role = user.Role,
-                Id = user.Id
-
+                Id = user.Id,
+                Name = user.Name
             };
-            return model;
         }
 
         public void Update(UserModel user)
@@ -58,7 +56,8 @@ namespace Application.Services
                 Email = user.Email,
                 Password = user.Password,
                 Role = user.Role,
-                Id = user.Id
+                Id = user.Id,
+                Name = user.Name
             });
         }
 
@@ -69,7 +68,6 @@ namespace Application.Services
                 Name = request.Name,
                 Email = request.Email,
                 Password = request.Password
-
             };
 
             return _repository.AddUser(user);
@@ -77,15 +75,24 @@ namespace Application.Services
 
         public UserModel? CheckCredentials(CredentialsRequest credentials)
         {
-            UserModel? user = Get(credentials.Name);
-            if (user.Password == credentials.Password)
+            var user = _repository.Get(credentials.Name);
+            if (user != null && user.Password == credentials.Password)
             {
-                user.Password = string.Empty;
-                return user;
+                return new UserModel()
+                {
+                    Id = user.Id,
+                    Name = user.Name,
+                    Email = user.Email,
+                    Role = user.Role,
+                    Password = string.Empty
+                };
             }
             return null;
+        }
 
-
+        public void Delete(int id)
+        {
+            _repository.Delete(id);
         }
     }
 }

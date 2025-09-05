@@ -1,6 +1,6 @@
 ﻿using Application.Dtos;
-using Application.Dtos.Application.Dtos; // Para UpdateBookRequest
 using Application.DTOs; // Para CreateBookRequest
+using Application.Services;
 using Domain.Entities;
 using Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -12,88 +12,80 @@ namespace API.Controllers
     [ApiController]
     public class BookController : ControllerBase
     {
-        private readonly IBookRepository _bookRepository;
+        private readonly BookService _bookService;
 
-        public BookController(IBookRepository bookRepository)
+        public BookController(BookService bookService)
         {
-            _bookRepository = bookRepository;
+            _bookService = bookService;
         }
 
         // GET: api/Book
         [HttpGet]
         public ActionResult<IEnumerable<BookDto>> GetBooks([FromQuery] bool includeDeleted = false)
         {
-            var books = _bookRepository.GetAll(includeDeleted)
+            var books = _bookService.GetAll(includeDeleted)
                 .Select(b => new BookDto
                 {
                     Id = b.Id,
                     Title = b.Title,
                     Price = b.Price,
                     Stock = b.Stock,
-                    AuthorName = b.Author.Name,
-                    AuthorLastName = b.Author.LastName,
-                    PublisherName = b.Publisher.Name,
-                    CategoryName = b.Category.Name
+                    AuthorName = b.Author?.Name,
+                    AuthorLastName = b.Author?.LastName,
+                    PublisherName = b.Publisher?.Name,
+                    CategoryName = b.Category?.Name
                 });
 
             return Ok(books);
         }
 
-
-        // GET: api/Book/5
+        // GET: api/Book/{id}
         [HttpGet("{id}")]
-        public ActionResult<Book> GetBook(int id)
+        public ActionResult<BookDto> GetBook(int id)
         {
-            var book = _bookRepository.GetById(id);
-
+            var book = _bookService.GetById(id);
             if (book == null || book.IsDeleted)
                 return NotFound();
 
-            return Ok(book);
+            var dto = new BookDto
+            {
+                Id = book.Id,
+                Title = book.Title,
+                Price = book.Price,
+                Stock = book.Stock,
+                AuthorName = book.Author?.Name,
+                AuthorLastName = book.Author?.LastName,
+                PublisherName = book.Publisher?.Name,
+                CategoryName = book.Category?.Name
+            };
+
+            return Ok(dto);
         }
 
-        // POST: api/Book (usando DTO)
+        // POST: api/Book
         [HttpPost]
-        public ActionResult<Book> CreateBook([FromBody] CreateBookRequest request)
+        public ActionResult<BookDto> CreateBook([FromBody] CreateBookRequest request)
         {
             if (request == null)
                 return BadRequest("Datos inválidos");
 
-            var book = new Book
-            {
-                Title = request.Title,
-                Price = request.Price,
-                Stock = request.Stock,
-                AuthorId = request.AuthorId,
-                PublisherId = request.PublisherId,
-                CategoryId = request.CategoryId,
-                IsDeleted = false
-            };
+            var dto = _bookService.CreateBook(request);
+            if (dto == null)
+                return NotFound();
 
-            _bookRepository.Add(book);
-            return CreatedAtAction(nameof(GetBook), new { id = book.Id }, book);
+            return CreatedAtAction(nameof(GetBook), new { id = dto.Id }, dto);
         }
 
-        // PUT: api/Book/5 (usando DTO)
         [HttpPut("{id}")]
         public IActionResult UpdateBook(int id, [FromBody] UpdateBookRequest request)
         {
             if (request == null)
                 return BadRequest("Datos inválidos");
 
-            var book = _bookRepository.GetById(id);
+            var updated = _bookService.Update(id, request);
 
-            if (book == null || book.IsDeleted)
+            if (!updated)
                 return NotFound();
-
-            book.Title = request.Title;
-            book.Price = request.Price;
-            book.Stock = request.Stock;
-            book.AuthorId = request.AuthorId;
-            book.PublisherId = request.PublisherId;
-            book.CategoryId = request.CategoryId;
-
-            _bookRepository.Update(book);
 
             return NoContent();
         }
@@ -102,17 +94,14 @@ namespace API.Controllers
         [HttpDelete("{id}")]
         public IActionResult DeleteBook(int id)
         {
-            var book = _bookRepository.GetById(id);
+            var deleted = _bookService.Delete(id);
 
-            if (book == null || book.IsDeleted)
+            if (!deleted)
                 return NotFound();
-
-            _bookRepository.Delete(id);
 
             return NoContent();
         }
     }
 }
-
 
 

@@ -14,5 +14,6 @@ namespace Domain.Interfaces
         User GetById(int id);
         int AddUser(User user);
         void Update(User user);
+        void Delete(int id); // 👈 agregado
     }
 }

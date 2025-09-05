@@ -9,6 +9,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
+//La autenticación puede leer el UserId desde los claims del JWT.?
+
 namespace BookstoreAPI.Controllers
 {
     [Route("api/[controller]")]

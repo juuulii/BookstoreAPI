@@ -11,6 +11,7 @@ namespace Domain.Entities
         [Required]
         [MaxLength(150)]
         public string Name { get; set; }
+        public bool IsDeleted { get; set; } = false;
 
         // relación con libros
         [JsonIgnore] //tmb podria haberlo configurado globalmente en program.cs
