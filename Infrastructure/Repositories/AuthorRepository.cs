@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+
 public class AuthorRepository : IAuthorRepository
 {
     private readonly ApplicationContext _context;
@@ -13,18 +14,28 @@ public class AuthorRepository : IAuthorRepository
         _context = context;
     }
 
-    public async Task<IEnumerable<Author>> GetAllAsync()
+    public async Task<IEnumerable<Author>> GetAllAsync(bool includeDeleted = false)
     {
-        return await _context.Authors
+        var query = _context.Authors
             .Include(a => a.Books)
-            .ToListAsync();
+            .AsQueryable();
+
+        if (!includeDeleted)
+            query = query.Where(a => !a.IsDeleted);
+
+        return await query.ToListAsync();
     }
 
-    public async Task<Author> GetByIdAsync(int id)
+    public async Task<Author> GetByIdAsync(int id, bool includeDeleted = false)
     {
-        return await _context.Authors
+        var query = _context.Authors
             .Include(a => a.Books)
-            .FirstOrDefaultAsync(a => a.Id == id);
+            .AsQueryable();
+
+        if (!includeDeleted)
+            query = query.Where(a => !a.IsDeleted);
+
+        return await query.FirstOrDefaultAsync(a => a.Id == id);
     }
 
     public async Task<Author> AddAsync(Author author)
@@ -46,7 +57,10 @@ public class AuthorRepository : IAuthorRepository
         if (author == null)
             return false;
 
-        _context.Authors.Remove(author);
+        author.IsDeleted = true; // 🔹 baja lógica
+        _context.Authors.Update(author);
+
         return await _context.SaveChangesAsync() > 0;
     }
 }
+

@@ -26,7 +26,7 @@ builder.Services.AddSwaggerGen(setupAction =>
     {
         Type = SecuritySchemeType.Http,
         Scheme = "Bearer",
-        Description = "Ac? pegar el token generado al loguearse."
+        Description = "Token generado al loguearse."
     });
 
     setupAction.AddSecurityRequirement(new OpenApiSecurityRequirement
@@ -77,7 +77,7 @@ builder.Services.AddScoped<OrderService>();
 
 var app = builder.Build();
 
-// 🔹 Middleware global de errores
+// Middleware global de errores
 app.UseExceptionHandler(errorApp =>
 {
     errorApp.Run(async context =>
@@ -98,29 +98,25 @@ app.UseExceptionHandler(errorApp =>
     });
 });
 
-// 🔹 Manejo global de códigos de estado (401, 403, 404, etc.)
+// Manejo global de códigos de estado (401, 403, 404, etc.)
 app.UseStatusCodePages(async context =>
 {
     var response = context.HttpContext.Response;
 
     response.ContentType = "application/json";
 
-    // Respuestas personalizadas
-    switch (response.StatusCode)
+    var result = System.Text.Json.JsonSerializer.Serialize(new
     {
-        case 401:
-            await response.WriteAsJsonAsync(new { message = "No autorizado. Debes iniciar sesión." });
-            break;
-        case 403:
-            await response.WriteAsJsonAsync(new { message = "Acceso denegado. No tienes permisos suficientes." });
-            break;
-        case 404:
-            await response.WriteAsJsonAsync(new { message = "Recurso no encontrado." });
-            break;
-        default:
-            await response.WriteAsJsonAsync(new { message = $"Error {response.StatusCode}" });
-            break;
-    }
+        message = response.StatusCode switch
+        {
+            401 => "No autorizado. Iniciá sesión para continuar.",
+            404 => "El recurso solicitado no fue encontrado.",
+            403 => "Acceso denegado.",
+            _   => "Ocurrió un error inesperado."
+        }
+    });
+
+    await response.WriteAsync(result);
 });
 
 // Configure the HTTP request pipeline.

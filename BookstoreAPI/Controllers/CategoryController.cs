@@ -5,105 +5,100 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BookstoreAPI.Controllers
+[Route("api/[controller]")]
+[ApiController]
+public class CategoriesController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class CategoriesController : ControllerBase
+    private readonly CategoryService _categoryService;
+
+    public CategoriesController(CategoryService categoryService)
     {
-        private readonly CategoryService _categoryService;
+        _categoryService = categoryService;
+    }
 
-        public CategoriesController(CategoryService categoryService)
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<CategoryDto>>> GetCategories([FromQuery] bool includeDeleted = false)
+    {
+        var categories = await _categoryService.GetAllAsync(includeDeleted);
+
+        var categoryDtos = categories.Select(c => new CategoryDto
         {
-            _categoryService = categoryService;
-        }
-
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<CategoryDto>>> GetCategories()
-        {
-            var categories = await _categoryService.GetAllAsync();
-
-            var categoryDtos = categories.Select(c => new CategoryDto
+            Id = c.Id,
+            Name = c.Name,
+            Books = c.Books.Select(b => new BookDto
             {
-                Id = c.Id,
-                Name = c.Name,
-                Books = c.Books.Select(b => new BookDto
-                {
-                    Id = b.Id,
-                    Title = b.Title,
-                    Price = b.Price,
-                    Stock = b.Stock
-                }).ToList()
-            });
+                Id = b.Id,
+                Title = b.Title,
+                Price = b.Price,
+                Stock = b.Stock
+            }).ToList()
+        });
 
-            return Ok(categoryDtos);
-        }
+        return Ok(categoryDtos);
+    }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<CategoryDto>> GetCategory(int id)
+    [HttpGet("{id}")]
+    public async Task<ActionResult<CategoryDto>> GetCategory(int id, [FromQuery] bool includeDeleted = false)
+    {
+        var category = await _categoryService.GetByIdAsync(id, includeDeleted);
+        if (category == null) return NotFound();
+
+        var categoryDto = new CategoryDto
         {
-            var category = await _categoryService.GetByIdAsync(id);
-            if (category == null) return NotFound();
-
-            var categoryDto = new CategoryDto
+            Id = category.Id,
+            Name = category.Name,
+            Books = category.Books.Select(b => new BookDto
             {
-                Id = category.Id,
-                Name = category.Name,
-                Books = category.Books.Select(b => new BookDto
-                {
-                    Id = b.Id,
-                    Title = b.Title,
-                    Price = b.Price,
-                    Stock = b.Stock
-                }).ToList()
-            };
+                Id = b.Id,
+                Title = b.Title,
+                Price = b.Price,
+                Stock = b.Stock
+            }).ToList()
+        };
 
-            return Ok(categoryDto);
-        }
+        return Ok(categoryDto);
+    }
 
-        [HttpPost]
-        public async Task<ActionResult<CategoryDto>> CreateCategory(CreateCategoryRequest createDto)
+    [HttpPost]
+    public async Task<ActionResult<CategoryDto>> CreateCategory(CreateCategoryRequest createDto)
+    {
+        var category = new Category
         {
-            var category = new Category
-            {
-                Name = createDto.Name
-            };
+            Name = createDto.Name
+        };
 
-            var created = await _categoryService.CreateAsync(category);
+        var created = await _categoryService.CreateAsync(category);
 
-            var categoryDto = new CategoryDto
-            {
-                Id = created.Id,
-                Name = created.Name,
-                Books = new List<BookDto>()
-            };
-
-            return CreatedAtAction(nameof(GetCategory), new { id = categoryDto.Id }, categoryDto);
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCategory(int id, CreateCategoryRequest updateDto)
+        var categoryDto = new CategoryDto
         {
-            var category = await _categoryService.GetByIdAsync(id);
-            if (category == null) return NotFound();
+            Id = created.Id,
+            Name = created.Name,
+            Books = new List<BookDto>()
+        };
 
-            category.Name = updateDto.Name;
+        return CreatedAtAction(nameof(GetCategory), new { id = categoryDto.Id }, categoryDto);
+    }
 
-            var updated = await _categoryService.UpdateAsync(category);
-            if (!updated) return BadRequest();
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateCategory(int id, CreateCategoryRequest updateDto)
+    {
+        var category = await _categoryService.GetByIdAsync(id);
+        if (category == null) return NotFound();
 
-            return NoContent();
-        }
+        category.Name = updateDto.Name;
 
-        [HttpDelete("{id}")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(404)]
-        public async Task<IActionResult> DeleteCategory(int id)
-        {
-            var deleted = await _categoryService.DeleteAsync(id);
-            if (!deleted) return NotFound();
+        var updated = await _categoryService.UpdateAsync(category);
+        if (!updated) return BadRequest();
 
-            return NoContent();
-        }
+        return NoContent();
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteCategory(int id)
+    {
+        var deleted = await _categoryService.DeleteAsync(id);
+        if (!deleted) return NotFound();
+
+        return NoContent();
     }
 }

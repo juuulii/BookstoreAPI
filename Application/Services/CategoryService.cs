@@ -11,14 +11,14 @@ public class CategoryService
         _categoryRepository = categoryRepository;
     }
 
-    public async Task<IEnumerable<Category>> GetAllAsync()
+    public async Task<IEnumerable<Category>> GetAllAsync(bool includeDeleted = false)
     {
-        return await _categoryRepository.GetAllAsync();
+        return await _categoryRepository.GetAllAsync(includeDeleted);
     }
 
-    public async Task<Category> GetByIdAsync(int id)
+    public async Task<Category> GetByIdAsync(int id, bool includeDeleted = false)
     {
-        return await _categoryRepository.GetByIdAsync(id);
+        return await _categoryRepository.GetByIdAsync(id, includeDeleted);
     }
 
     public async Task<Category> CreateAsync(Category category)
@@ -36,4 +36,3 @@ public class CategoryService
         return await _categoryRepository.DeleteAsync(id);
     }
 }
-

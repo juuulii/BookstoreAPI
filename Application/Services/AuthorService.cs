@@ -11,14 +11,14 @@ public class AuthorService
         _authorRepository = authorRepository;
     }
 
-    public async Task<IEnumerable<Author>> GetAllAsync()
+    public async Task<IEnumerable<Author>> GetAllAsync(bool includeDeleted = false)
     {
-        return await _authorRepository.GetAllAsync();
+        return await _authorRepository.GetAllAsync(includeDeleted);
     }
 
-    public async Task<Author> GetByIdAsync(int id)
+    public async Task<Author> GetByIdAsync(int id, bool includeDeleted = false)
     {
-        return await _authorRepository.GetByIdAsync(id);
+        return await _authorRepository.GetByIdAsync(id, includeDeleted);
     }
 
     public async Task<Author> CreateAsync(Author author)
@@ -36,3 +36,4 @@ public class AuthorService
         return await _authorRepository.DeleteAsync(id);
     }
 }
+

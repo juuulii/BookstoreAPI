@@ -5,106 +5,101 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BookstoreAPI.Controllers
+[Route("api/[controller]")]
+[ApiController]
+public class PublishersController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class PublishersController : ControllerBase
+    private readonly PublisherService _publisherService;
+
+    public PublishersController(PublisherService publisherService)
     {
-        private readonly PublisherService _publisherService;
+        _publisherService = publisherService;
+    }
 
-        public PublishersController(PublisherService publisherService)
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<PublisherDto>>> GetPublishers([FromQuery] bool includeDeleted = false)
+    {
+        var publishers = await _publisherService.GetAllAsync(includeDeleted);
+
+        var publisherDtos = publishers.Select(p => new PublisherDto
         {
-            _publisherService = publisherService;
-        }
-
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<PublisherDto>>> GetPublishers()
-        {
-            var publishers = await _publisherService.GetAllAsync();
-
-            var publisherDtos = publishers.Select(p => new PublisherDto
+            Id = p.Id,
+            Name = p.Name,
+            Books = p.Books.Select(b => new BookDto
             {
-                Id = p.Id,
-                Name = p.Name,
-                Books = p.Books.Select(b => new BookDto
-                {
-                    Id = b.Id,
-                    Title = b.Title,
-                    Price = b.Price,
-                    Stock = b.Stock
-                }).ToList()
-            });
+                Id = b.Id,
+                Title = b.Title,
+                Price = b.Price,
+                Stock = b.Stock
+            }).ToList()
+        });
 
-            return Ok(publisherDtos);
-        }
+        return Ok(publisherDtos);
+    }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<PublisherDto>> GetPublisher(int id)
+    [HttpGet("{id}")]
+    public async Task<ActionResult<PublisherDto>> GetPublisher(int id, [FromQuery] bool includeDeleted = false)
+    {
+        var publisher = await _publisherService.GetByIdAsync(id, includeDeleted);
+        if (publisher == null) return NotFound();
+
+        var publisherDto = new PublisherDto
         {
-            var publisher = await _publisherService.GetByIdAsync(id);
-            if (publisher == null) return NotFound();
-
-            var publisherDto = new PublisherDto
+            Id = publisher.Id,
+            Name = publisher.Name,
+            Books = publisher.Books.Select(b => new BookDto
             {
-                Id = publisher.Id,
-                Name = publisher.Name,
-                Books = publisher.Books.Select(b => new BookDto
-                {
-                    Id = b.Id,
-                    Title = b.Title,
-                    Price = b.Price,
-                    Stock = b.Stock
-                }).ToList()
-            };
+                Id = b.Id,
+                Title = b.Title,
+                Price = b.Price,
+                Stock = b.Stock
+            }).ToList()
+        };
 
-            return Ok(publisherDto);
-        }
+        return Ok(publisherDto);
+    }
 
-        [HttpPost]
-        public async Task<ActionResult<PublisherDto>> CreatePublisher(CreatePublisherRequest createDto)
+    [HttpPost]
+    public async Task<ActionResult<PublisherDto>> CreatePublisher(CreatePublisherRequest createDto)
+    {
+        var publisher = new Publisher
         {
-            var publisher = new Publisher
-            {
-                Name = createDto.Name
-            };
+            Name = createDto.Name
+        };
 
-            var created = await _publisherService.CreateAsync(publisher);
+        var created = await _publisherService.CreateAsync(publisher);
 
-            var publisherDto = new PublisherDto
-            {
-                Id = created.Id,
-                Name = created.Name,
-                Books = new List<BookDto>()
-            };
-
-            return CreatedAtAction(nameof(GetPublisher), new { id = publisherDto.Id }, publisherDto);
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdatePublisher(int id, CreatePublisherRequest updateDto)
+        var publisherDto = new PublisherDto
         {
-            var publisher = await _publisherService.GetByIdAsync(id);
-            if (publisher == null) return NotFound();
+            Id = created.Id,
+            Name = created.Name,
+            Books = new List<BookDto>()
+        };
 
-            publisher.Name = updateDto.Name;
+        return CreatedAtAction(nameof(GetPublisher), new { id = publisherDto.Id }, publisherDto);
+    }
 
-            var updated = await _publisherService.UpdateAsync(publisher);
-            if (!updated) return BadRequest();
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdatePublisher(int id, CreatePublisherRequest updateDto)
+    {
+        var publisher = await _publisherService.GetByIdAsync(id);
+        if (publisher == null) return NotFound();
 
-            return NoContent();
-        }
+        publisher.Name = updateDto.Name;
 
-        [HttpDelete("{id}")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(404)]
-        public async Task<IActionResult> DeletePublisher(int id)
-        {
-            var deleted = await _publisherService.DeleteAsync(id);
-            if (!deleted) return NotFound();
+        var updated = await _publisherService.UpdateAsync(publisher);
+        if (!updated) return BadRequest();
 
-            return NoContent();
-        }
+        return NoContent();
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeletePublisher(int id)
+    {
+        var deleted = await _publisherService.DeleteAsync(id);
+        if (!deleted) return NotFound();
+
+        return NoContent();
     }
 }
 

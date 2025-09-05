@@ -20,9 +20,9 @@ namespace BookstoreAPI.Controllers
 
         // GET: api/authors
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<AuthorDto>>> GetAuthors()
+        public async Task<ActionResult<IEnumerable<AuthorDto>>> GetAuthors([FromQuery] bool includeDeleted = false)
         {
-            var authors = await _authorService.GetAllAsync();
+            var authors = await _authorService.GetAllAsync(includeDeleted);
 
             var authorDtos = authors.Select(a => new AuthorDto
             {
@@ -36,7 +36,7 @@ namespace BookstoreAPI.Controllers
                     Title = b.Title,
                     Price = b.Price,
                     Stock = b.Stock,
-                    AuthorName = b.Author?.Name, // por si viene null
+                    AuthorName = b.Author?.Name,
                     AuthorLastName = b.Author?.LastName,
                     PublisherName = b.Publisher?.Name,
                     CategoryName = b.Category?.Name
@@ -46,12 +46,10 @@ namespace BookstoreAPI.Controllers
             return Ok(authorDtos);
         }
 
-
-        // GET: api/authors/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<AuthorDto>> GetAuthor(int id)
+        public async Task<ActionResult<AuthorDto>> GetAuthor(int id, [FromQuery] bool includeDeleted = false)
         {
-            var author = await _authorService.GetByIdAsync(id);
+            var author = await _authorService.GetByIdAsync(id, includeDeleted);
             if (author == null) return NotFound();
 
             var authorDto = new AuthorDto
@@ -71,6 +69,7 @@ namespace BookstoreAPI.Controllers
 
             return Ok(authorDto);
         }
+
 
         // POST: api/authors
         [HttpPost]

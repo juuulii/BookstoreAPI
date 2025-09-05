@@ -13,18 +13,28 @@ public class PublisherRepository : IPublisherRepository
         _context = context;
     }
 
-    public async Task<IEnumerable<Publisher>> GetAllAsync()
+    public async Task<IEnumerable<Publisher>> GetAllAsync(bool includeDeleted = false)
     {
-        return await _context.Publishers
+        var query = _context.Publishers
             .Include(p => p.Books)
-            .ToListAsync();
+            .AsQueryable();
+
+        if (!includeDeleted)
+            query = query.Where(p => !p.IsDeleted);
+
+        return await query.ToListAsync();
     }
 
-    public async Task<Publisher> GetByIdAsync(int id)
+    public async Task<Publisher> GetByIdAsync(int id, bool includeDeleted = false)
     {
-        return await _context.Publishers
+        var query = _context.Publishers
             .Include(p => p.Books)
-            .FirstOrDefaultAsync(p => p.Id == id);
+            .AsQueryable();
+
+        if (!includeDeleted)
+            query = query.Where(p => !p.IsDeleted);
+
+        return await query.FirstOrDefaultAsync(p => p.Id == id);
     }
 
     public async Task<Publisher> AddAsync(Publisher publisher)
@@ -45,8 +55,11 @@ public class PublisherRepository : IPublisherRepository
         var publisher = await _context.Publishers.FindAsync(id);
         if (publisher == null) return false;
 
-        _context.Publishers.Remove(publisher);
+        publisher.IsDeleted = true; // 🔹 Baja lógica
+        _context.Publishers.Update(publisher);
+
         return await _context.SaveChangesAsync() > 0;
     }
 }
+
 

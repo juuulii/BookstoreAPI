@@ -11,14 +11,14 @@ public class PublisherService
         _publisherRepository = publisherRepository;
     }
 
-    public async Task<IEnumerable<Publisher>> GetAllAsync()
+    public async Task<IEnumerable<Publisher>> GetAllAsync(bool includeDeleted = false)
     {
-        return await _publisherRepository.GetAllAsync();
+        return await _publisherRepository.GetAllAsync(includeDeleted);
     }
 
-    public async Task<Publisher> GetByIdAsync(int id)
+    public async Task<Publisher> GetByIdAsync(int id, bool includeDeleted = false)
     {
-        return await _publisherRepository.GetByIdAsync(id);
+        return await _publisherRepository.GetByIdAsync(id, includeDeleted);
     }
 
     public async Task<Publisher> CreateAsync(Publisher publisher)

@@ -13,18 +13,28 @@ public class CategoryRepository : ICategoryRepository
         _context = context;
     }
 
-    public async Task<IEnumerable<Category>> GetAllAsync()
+    public async Task<IEnumerable<Category>> GetAllAsync(bool includeDeleted = false)
     {
-        return await _context.Categories
+        var query = _context.Categories
             .Include(c => c.Books)
-            .ToListAsync();
+            .AsQueryable();
+
+        if (!includeDeleted)
+            query = query.Where(c => !c.IsDeleted);
+
+        return await query.ToListAsync();
     }
 
-    public async Task<Category> GetByIdAsync(int id)
+    public async Task<Category> GetByIdAsync(int id, bool includeDeleted = false)
     {
-        return await _context.Categories
+        var query = _context.Categories
             .Include(c => c.Books)
-            .FirstOrDefaultAsync(c => c.Id == id);
+            .AsQueryable();
+
+        if (!includeDeleted)
+            query = query.Where(c => !c.IsDeleted);
+
+        return await query.FirstOrDefaultAsync(c => c.Id == id);
     }
 
     public async Task<Category> AddAsync(Category category)
@@ -45,7 +55,9 @@ public class CategoryRepository : ICategoryRepository
         var category = await _context.Categories.FindAsync(id);
         if (category == null) return false;
 
-        _context.Categories.Remove(category);
+        category.IsDeleted = true; // 🔹 Baja lógica
+        _context.Categories.Update(category);
+
         return await _context.SaveChangesAsync() > 0;
     }
 }
