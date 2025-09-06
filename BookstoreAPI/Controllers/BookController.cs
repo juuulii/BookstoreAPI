@@ -1,6 +1,7 @@
 ﻿using Application.Dtos;
 using Application.DTOs; // Para CreateBookRequest
 using Application.Services;
+using Microsoft.AspNetCore.Authorization;
 using Domain.Entities;
 using Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -21,6 +22,7 @@ namespace API.Controllers
 
         // GET: api/Book
         [HttpGet]
+        [Authorize(Roles = "Admin, Cliente")] 
         public ActionResult<IEnumerable<BookDto>> GetBooks([FromQuery] bool includeDeleted = false)
         {
             var books = _bookService.GetAll(includeDeleted)
@@ -41,6 +43,7 @@ namespace API.Controllers
 
         // GET: api/Book/{id}
         [HttpGet("{id}")]
+        [Authorize(Roles = "Admin, Cliente")] 
         public ActionResult<BookDto> GetBook(int id)
         {
             var book = _bookService.GetById(id);
@@ -64,6 +67,7 @@ namespace API.Controllers
 
         // POST: api/Book
         [HttpPost]
+        [Authorize(Roles = "Admin")] 
         public ActionResult<BookDto> CreateBook([FromBody] CreateBookRequest request)
         {
             if (request == null)
@@ -77,6 +81,7 @@ namespace API.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")] 
         public IActionResult UpdateBook(int id, [FromBody] UpdateBookRequest request)
         {
             if (request == null)
@@ -92,6 +97,7 @@ namespace API.Controllers
 
         // DELETE lógico: api/Book/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")] 
         public IActionResult DeleteBook(int id)
         {
             var deleted = _bookService.Delete(id);

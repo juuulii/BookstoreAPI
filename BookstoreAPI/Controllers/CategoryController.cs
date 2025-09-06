@@ -1,6 +1,7 @@
 ﻿using Application.Dtos;
 using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,6 +18,7 @@ public class CategoriesController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize(Roles = "Admin, Cliente")] 
     public async Task<ActionResult<IEnumerable<CategoryDto>>> GetCategories([FromQuery] bool includeDeleted = false)
     {
         var categories = await _categoryService.GetAllAsync(includeDeleted);
@@ -38,6 +40,7 @@ public class CategoriesController : ControllerBase
     }
 
     [HttpGet("{id}")]
+    [Authorize(Roles = "Admin, Cliente")] 
     public async Task<ActionResult<CategoryDto>> GetCategory(int id, [FromQuery] bool includeDeleted = false)
     {
         var category = await _categoryService.GetByIdAsync(id, includeDeleted);
@@ -60,6 +63,7 @@ public class CategoriesController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin")] 
     public async Task<ActionResult<CategoryDto>> CreateCategory(CreateCategoryRequest createDto)
     {
         var category = new Category
@@ -80,6 +84,7 @@ public class CategoriesController : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [Authorize(Roles = "Admin")] 
     public async Task<IActionResult> UpdateCategory(int id, CreateCategoryRequest updateDto)
     {
         var category = await _categoryService.GetByIdAsync(id);
@@ -94,6 +99,7 @@ public class CategoriesController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")] 
     public async Task<IActionResult> DeleteCategory(int id)
     {
         var deleted = await _categoryService.DeleteAsync(id);

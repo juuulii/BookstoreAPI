@@ -1,6 +1,7 @@
 ﻿using Application.Dtos;
 using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,6 +21,7 @@ namespace BookstoreAPI.Controllers
 
         // GET: api/authors
         [HttpGet]
+        [Authorize(Roles = "Admin, Cliente")] 
         public async Task<ActionResult<IEnumerable<AuthorDto>>> GetAuthors([FromQuery] bool includeDeleted = false)
         {
             var authors = await _authorService.GetAllAsync(includeDeleted);
@@ -47,6 +49,7 @@ namespace BookstoreAPI.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "Admin, Cliente")] 
         public async Task<ActionResult<AuthorDto>> GetAuthor(int id, [FromQuery] bool includeDeleted = false)
         {
             var author = await _authorService.GetByIdAsync(id, includeDeleted);
@@ -73,6 +76,7 @@ namespace BookstoreAPI.Controllers
 
         // POST: api/authors
         [HttpPost]
+        [Authorize(Roles = "Admin")] 
         public async Task<ActionResult<AuthorDto>> CreateAuthor(CreateAuthorRequest createDto)
         {
             var author = new Author
@@ -97,6 +101,7 @@ namespace BookstoreAPI.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")] 
         public async Task<IActionResult> UpdateAuthor(int id, CreateAuthorRequest updateDto)
         {
             var author = await _authorService.GetByIdAsync(id);
@@ -113,6 +118,7 @@ namespace BookstoreAPI.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")] 
         public async Task<IActionResult> DeleteAuthor(int id)
         {
             var deleted = await _authorService.DeleteAsync(id);

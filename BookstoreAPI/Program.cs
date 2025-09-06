@@ -2,6 +2,7 @@ using Application.Services;
 using Domain.Interfaces;
 using Infraestructure; //necesito esto para la inyeccion de dependencia (base de datos a nuestra API)
 using Infraestructure.Repositories;
+using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;

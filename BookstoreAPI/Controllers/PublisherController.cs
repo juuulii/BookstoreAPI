@@ -1,6 +1,7 @@
 ﻿using Application.Dtos;
 using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,6 +18,7 @@ public class PublishersController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize(Roles = "Admin, Cliente")] 
     public async Task<ActionResult<IEnumerable<PublisherDto>>> GetPublishers([FromQuery] bool includeDeleted = false)
     {
         var publishers = await _publisherService.GetAllAsync(includeDeleted);
@@ -38,6 +40,7 @@ public class PublishersController : ControllerBase
     }
 
     [HttpGet("{id}")]
+    [Authorize(Roles = "Admin, Cliente")] 
     public async Task<ActionResult<PublisherDto>> GetPublisher(int id, [FromQuery] bool includeDeleted = false)
     {
         var publisher = await _publisherService.GetByIdAsync(id, includeDeleted);
@@ -60,6 +63,7 @@ public class PublishersController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin")] 
     public async Task<ActionResult<PublisherDto>> CreatePublisher(CreatePublisherRequest createDto)
     {
         var publisher = new Publisher
@@ -80,6 +84,7 @@ public class PublishersController : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [Authorize(Roles = "Admin")] 
     public async Task<IActionResult> UpdatePublisher(int id, CreatePublisherRequest updateDto)
     {
         var publisher = await _publisherService.GetByIdAsync(id);
@@ -94,6 +99,7 @@ public class PublishersController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")] 
     public async Task<IActionResult> DeletePublisher(int id)
     {
         var deleted = await _publisherService.DeleteAsync(id);

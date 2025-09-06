@@ -1,8 +1,11 @@
 ﻿using Domain.Entities;
 using Domain.Interfaces;
+using Infraestructure;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace Infraestructure.Repositories
+namespace Infrastructure.Repositories
 {
     public class OrderRepository : IOrderRepository
     {
@@ -22,7 +25,16 @@ namespace Infraestructure.Repositories
 
         public async Task<Book> GetBookByIdAsync(int bookId)
         {
-            return await _context.Books.FirstOrDefaultAsync(b => b.Id == bookId);
+            return await _context.Books
+                .Include(b => b.Author)      
+                .Include(b => b.Category)
+                .Include(b => b.Publisher)
+                .FirstOrDefaultAsync(b => b.Id == bookId);
+        }
+
+        public async Task<User> GetClienteByIdAsync(int clienteId) 
+        {
+            return await _context.Users.FirstOrDefaultAsync(u => u.Id == clienteId && !u.IsDeleted);
         }
 
         public async Task UpdateBookAsync(Book book)
@@ -31,13 +43,12 @@ namespace Infraestructure.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<List<User>> GetClientsByBookIdAsync(int bookId)
+        public async Task<List<Order>> GetOrdersByBookIdAsync(int bookId)
         {
             return await _context.Orders
-                .Where(o => o.BookId == bookId)
                 .Include(o => o.Cliente)
-                .Select(o => o.Cliente)
-                .Distinct()
+                .Where(o => o.BookId == bookId)
+                .Include(o => o.Book)
                 .ToListAsync();
         }
     }
