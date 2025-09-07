@@ -19,13 +19,13 @@ namespace Application.Services
             return _bookRepository.GetAll(includeDeleted);
         }
 
-        public Book GetById(int id)
+        public Book? GetById(int id)
         {
             return _bookRepository.GetById(id); // Tu repo ya hace Include(...)
         }
 
         // Crear libro y devolver DTO consistente
-        public BookDto CreateBook(CreateBookRequest request)
+        public BookDto? CreateBook(CreateBookRequest request)
         {
             var book = new Book
             {

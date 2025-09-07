@@ -11,7 +11,7 @@ namespace Domain.Entities
 
         [Required]
         [MaxLength(150)]
-        public string Title { get; set; }
+        public required string Title { get; set; }
 
         [Column(TypeName = "decimal(10,2)")]
         public decimal Price { get; set; }
@@ -27,9 +27,9 @@ namespace Domain.Entities
         public int CategoryId { get; set; }
 
         // Navigation Properties
-        public Author Author { get; set; }
-        public Publisher Publisher { get; set; }
-        public Category Category { get; set; }
+        public Author? Author { get; set; }
+        public Publisher? Publisher { get; set; } //esta con '?' para q funcione el dto
+        public Category? Category { get; set; }
 
         public Book() { }
 

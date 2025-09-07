@@ -8,7 +8,7 @@ namespace Application.Dtos
 {
     public class CredentialsRequest
     {
-        public string Name { get; set; }
-        public string Password { get; set; }
+        public required string Name { get; set; }
+        public required string Password { get; set; }
     }
 }

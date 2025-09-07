@@ -8,6 +8,6 @@ namespace Application.Dtos
 {
     public class CreateCategoryRequest
     {
-        public string Name { get; set; }
+        public required string Name { get; set; }
     }
 }

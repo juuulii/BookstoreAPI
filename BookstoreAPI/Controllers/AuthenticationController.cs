@@ -32,7 +32,7 @@ namespace BookstoreAPI.Controllers
             UserModel? userLogged = _userService.CheckCredentials(credentials);
             if (userLogged is not null)
             {
-                var saltEncrypted = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_configuration["Authentication:SecretForKey"])); //encripta nuestro secreto
+                var saltEncrypted = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_configuration["Authentication:SecretForKey"]!)); //encripta nuestro secreto, el '!' significa q nunca va a ser nulo
 
                 var signature = new SigningCredentials(saltEncrypted, SecurityAlgorithms.HmacSha256);
 

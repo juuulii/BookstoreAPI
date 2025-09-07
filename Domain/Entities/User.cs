@@ -13,10 +13,14 @@ namespace Domain.Entities
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)] //va a ser numerico y unico
         public int Id { get; set; }
-        public string Name { get; set; }
-        public string Email { get; set; }
+        [Required]
+        public required string Name { get; set; }
+        [Required]
+        [EmailAddress]
+        public required string Email { get; set; }
         public UserRole Role { get; set; }
-        public string Password { get; set; }
+        [Required]
+        public required string Password { get; set; }
         public bool IsDeleted { get; set; } = false;
     }
 

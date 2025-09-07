@@ -25,7 +25,7 @@ public class CategoryRepository : ICategoryRepository
         return await query.ToListAsync();
     }
 
-    public async Task<Category> GetByIdAsync(int id, bool includeDeleted = false)
+    public async Task<Category?> GetByIdAsync(int id, bool includeDeleted = false)
     {
         var query = _context.Categories
             .Include(c => c.Books)

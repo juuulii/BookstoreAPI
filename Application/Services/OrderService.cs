@@ -22,7 +22,7 @@ namespace Application.Services
             var cliente = await _orderRepository.GetClienteByIdAsync(clienteId);
 
             if (book == null)
-                throw new Exception("El libro no existe.");
+                throw new Exception("El libro no existe o fue eliminado."); // <-- aclaramos el error
             if (cliente == null)
                 throw new Exception("El cliente no existe.");
 
@@ -41,10 +41,8 @@ namespace Application.Services
                 Fecha = DateTime.UtcNow
             };
 
-            // Guardar orden
             var savedOrder = await _orderRepository.CreateAsync(order);
 
-            // Devolver DTO con la info que se pidio
             return new OrderResponseDto
             {
                 ClienteNombre = cliente.Name,
@@ -57,6 +55,7 @@ namespace Application.Services
                 PrecioTotal = savedOrder.Cantidad * book.Price
             };
         }
+
 
         // GET con lista de clientes
         public async Task<List<OrderInfoDto>> GetClientsByBookIdAsync(int bookId)

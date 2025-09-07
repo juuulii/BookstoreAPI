@@ -26,7 +26,7 @@ public class AuthorRepository : IAuthorRepository
         return await query.ToListAsync();
     }
 
-    public async Task<Author> GetByIdAsync(int id, bool includeDeleted = false)
+    public async Task<Author?> GetByIdAsync(int id, bool includeDeleted = false)
     {
         var query = _context.Authors
             .Include(a => a.Books)

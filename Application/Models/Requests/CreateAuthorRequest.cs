@@ -8,8 +8,8 @@ namespace Application.Dtos
 {
     public class CreateAuthorRequest
     {
-        public string Name { get; set; }
-        public string LastName { get; set; }
-        public string Nationality { get; set; }
+        public required string Name { get; set; }
+        public required string LastName { get; set; }
+        public required string Nationality { get; set; }
     }
 }

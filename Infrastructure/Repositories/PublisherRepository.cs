@@ -25,7 +25,7 @@ public class PublisherRepository : IPublisherRepository
         return await query.ToListAsync();
     }
 
-    public async Task<Publisher> GetByIdAsync(int id, bool includeDeleted = false)
+    public async Task<Publisher?> GetByIdAsync(int id, bool includeDeleted = false)
     {
         var query = _context.Publishers
             .Include(p => p.Books)

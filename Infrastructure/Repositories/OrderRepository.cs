@@ -23,18 +23,19 @@ namespace Infrastructure.Repositories
             return order;
         }
 
-        public async Task<Book> GetBookByIdAsync(int bookId)
+        public async Task<Book?> GetBookByIdAsync(int bookId)
         {
             return await _context.Books
-                .Include(b => b.Author)      
+                .Include(b => b.Author)
                 .Include(b => b.Category)
                 .Include(b => b.Publisher)
-                .FirstOrDefaultAsync(b => b.Id == bookId);
+                .FirstOrDefaultAsync(b => b.Id == bookId && !b.IsDeleted); 
         }
 
-        public async Task<User> GetClienteByIdAsync(int clienteId) 
+        public async Task<User?> GetClienteByIdAsync(int clienteId) 
         {
-            return await _context.Users.FirstOrDefaultAsync(u => u.Id == clienteId && !u.IsDeleted);
+            return await _context.Users
+                .FirstOrDefaultAsync(u => u.Id == clienteId && !u.IsDeleted);
         }
 
         public async Task UpdateBookAsync(Book book)

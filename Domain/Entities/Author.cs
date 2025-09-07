@@ -6,10 +6,15 @@ namespace Domain.Entities
 {
     public class Author
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        public string Name { get; set; }
-        public string LastName { get; set; }
-        public string Nationality { get; set; }
+        [Required]
+        public required string Name { get; set; }
+        [Required]
+        public required string LastName { get; set; }
+        [Required]
+        public required string Nationality { get; set; }
         public bool IsDeleted { get; set; } = false;
 
         // colección de libros del autor

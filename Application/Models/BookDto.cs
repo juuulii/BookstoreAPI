@@ -10,21 +10,14 @@ namespace Application.Dtos
     public class BookDto
     {
         public int Id { get; set; }
-        public string Title { get; set; }
+        public required string Title { get; set; }
         public decimal Price { get; set; }
         public int Stock { get; set; }
 
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        public string AuthorName { get; set; }
-
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        public string AuthorLastName { get; set; }
-
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        public string PublisherName { get; set; }
-
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        public string CategoryName { get; set; }
+        public string? AuthorName { get; set; }
+        public string? AuthorLastName { get; set; }
+        public string? PublisherName { get; set; }
+        public string? CategoryName { get; set; }
     }
 
 }

@@ -16,7 +16,7 @@ public class PublisherService
         return await _publisherRepository.GetAllAsync(includeDeleted);
     }
 
-    public async Task<Publisher> GetByIdAsync(int id, bool includeDeleted = false)
+    public async Task<Publisher?> GetByIdAsync(int id, bool includeDeleted = false)
     {
         return await _publisherRepository.GetByIdAsync(id, includeDeleted);
     }

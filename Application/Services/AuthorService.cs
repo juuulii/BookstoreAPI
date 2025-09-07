@@ -16,7 +16,7 @@ public class AuthorService
         return await _authorRepository.GetAllAsync(includeDeleted);
     }
 
-    public async Task<Author> GetByIdAsync(int id, bool includeDeleted = false)
+    public async Task<Author?> GetByIdAsync(int id, bool includeDeleted = false)
     {
         return await _authorRepository.GetByIdAsync(id, includeDeleted);
     }

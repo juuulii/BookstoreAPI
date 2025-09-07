@@ -16,7 +16,7 @@ public class CategoryService
         return await _categoryRepository.GetAllAsync(includeDeleted);
     }
 
-    public async Task<Category> GetByIdAsync(int id, bool includeDeleted = false)
+    public async Task<Category?> GetByIdAsync(int id, bool includeDeleted = false)
     {
         return await _categoryRepository.GetByIdAsync(id, includeDeleted);
     }

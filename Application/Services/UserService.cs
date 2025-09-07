@@ -14,7 +14,7 @@ namespace Application.Services
             _repository = repository;
         }
 
-        public UserModel Get(string name)
+        public UserModel? Get(string name)
         {
             var user = _repository.Get(name);
             if (user == null) return null;
@@ -34,7 +34,7 @@ namespace Application.Services
             return _repository.Get(includeDeleted);
         }
 
-        public UserModel GetById(int id)
+        public UserModel? GetById(int id)
         {
             var user = _repository.GetById(id);
             if (user == null) return null;
