@@ -17,6 +17,9 @@ public class CategoryRepository : ICategoryRepository
     {
         var query = _context.Categories
             .Include(c => c.Books)
+                .ThenInclude(b => b.Author)
+            .Include(c => c.Books)
+                .ThenInclude(b => b.Publisher)
             .AsQueryable();
 
         if (!includeDeleted)
@@ -29,6 +32,9 @@ public class CategoryRepository : ICategoryRepository
     {
         var query = _context.Categories
             .Include(c => c.Books)
+                .ThenInclude(b => b.Author)
+            .Include(p => p.Books)
+                .ThenInclude(b => b.Publisher)
             .AsQueryable();
 
         if (!includeDeleted)

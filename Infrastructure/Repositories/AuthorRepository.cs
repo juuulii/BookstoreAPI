@@ -18,6 +18,9 @@ public class AuthorRepository : IAuthorRepository
     {
         var query = _context.Authors
             .Include(a => a.Books)
+                .ThenInclude(b => b.Publisher)
+            .Include(p => p.Books)
+                .ThenInclude(b => b.Category)
             .AsQueryable();
 
         if (!includeDeleted)
@@ -30,6 +33,9 @@ public class AuthorRepository : IAuthorRepository
     {
         var query = _context.Authors
             .Include(a => a.Books)
+                .ThenInclude(b => b.Publisher)
+            .Include(p => p.Books)
+                .ThenInclude(b => b.Category)
             .AsQueryable();
 
         if (!includeDeleted)

@@ -42,7 +42,7 @@ namespace Infraestructure.Repositories
         {
             _context.Users.Add(user);
             _context.SaveChanges();
-            return user.Id;
+            return user.Id; //Devuelve el Id del nuevo usuario.
         }
 
         public void Delete(int id)

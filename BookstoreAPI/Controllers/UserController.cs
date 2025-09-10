@@ -9,7 +9,7 @@ namespace BookstoreAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize] //ver esto
     public class UserController : ControllerBase
     {
         private readonly UserService _service;
