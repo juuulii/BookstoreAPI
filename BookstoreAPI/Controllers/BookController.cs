@@ -20,7 +20,6 @@ namespace API.Controllers
             _bookService = bookService;
         }
 
-        // GET: api/Book
         [HttpGet]
         [Authorize(Roles = "Admin, Cliente")] 
         public ActionResult<IEnumerable<BookDto>> GetBooks([FromQuery] bool includeDeleted = false)
@@ -41,7 +40,6 @@ namespace API.Controllers
             return Ok(books);
         }
 
-        // GET: api/Book/{id}
         [HttpGet("{id}")]
         [Authorize(Roles = "Admin, Cliente")] 
         public ActionResult<BookDto> GetBook(int id)
@@ -65,7 +63,6 @@ namespace API.Controllers
             return Ok(dto);
         }
 
-        // POST: api/Book
         [HttpPost]
         [Authorize(Roles = "Admin")] 
         public ActionResult<BookDto> CreateBook([FromBody] CreateBookRequest request)
@@ -95,7 +92,6 @@ namespace API.Controllers
             return NoContent();
         }
 
-        // DELETE lógico: api/Book/5
         [HttpDelete("{id}")]
         [Authorize(Roles = "Admin")] 
         public IActionResult DeleteBook(int id)

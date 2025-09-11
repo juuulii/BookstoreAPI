@@ -53,7 +53,7 @@ namespace Infraestructure.Repositories
             var existingBook = _context.Books.Find(id);
             if (existingBook != null)
             {
-                existingBook.IsDeleted = true; // baja lógica
+                existingBook.IsDeleted = true; 
                 _context.SaveChanges();
             }
         }

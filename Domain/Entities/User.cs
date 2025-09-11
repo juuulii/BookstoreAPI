@@ -11,7 +11,7 @@ namespace Domain.Entities
     public class User
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)] //va a ser numerico y unico
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)] 
         public int Id { get; set; }
         [Required]
         public required string Name { get; set; }

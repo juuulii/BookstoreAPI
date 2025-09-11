@@ -16,8 +16,7 @@ namespace Domain.Entities
         public required string Name { get; set; }
         public bool IsDeleted { get; set; } = false;
 
-        // relación con libros
-        [JsonIgnore] //tmb podria haberlo configurado globalmente en program.cs
+        [JsonIgnore] 
         public ICollection<Book> Books { get; set; } = new List<Book>();
     }
 }

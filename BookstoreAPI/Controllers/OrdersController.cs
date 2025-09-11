@@ -24,7 +24,6 @@ namespace BookstoreAPI.Controllers
         {
             try
             {
-                // Obtener el ID del usuario desde el token
                 var clienteId = int.Parse(User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value);
 
                 var order = await _orderService.CreateOrderAsync(clienteId, request.BookId, request.Cantidad);

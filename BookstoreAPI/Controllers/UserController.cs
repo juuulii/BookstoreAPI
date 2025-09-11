@@ -9,7 +9,7 @@ namespace BookstoreAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize] //ver esto
+    [Authorize] 
     public class UserController : ControllerBase
     {
         private readonly UserService _service;
@@ -48,7 +48,7 @@ namespace BookstoreAPI.Controllers
 
 
         [HttpPost]
-        [AllowAnonymous] // 👈 importante para registrarse
+        [AllowAnonymous] 
         public IActionResult Add([FromBody] UserForAddRequest body)
         {
             return Ok(_service.AddUser(body));

@@ -17,8 +17,7 @@ namespace Domain.Entities
         public required string Nationality { get; set; }
         public bool IsDeleted { get; set; } = false;
 
-        // colección de libros del autor
-        [JsonIgnore] // para q no se hagan ciclos
+        [JsonIgnore] 
         public ICollection<Book> Books { get; set; } = new List<Book>();
 
     }

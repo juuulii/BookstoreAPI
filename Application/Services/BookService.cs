@@ -1,5 +1,5 @@
-﻿using Application.Dtos;   // BookDto
-using Application.DTOs;  // CreateBookRequest  <-- ¡este es el namespace que vos usás!
+﻿using Application.Dtos;   
+using Application.DTOs;  
 using Domain.Entities;
 using Domain.Interfaces;
 
@@ -21,10 +21,9 @@ namespace Application.Services
 
         public Book? GetById(int id)
         {
-            return _bookRepository.GetById(id); // Tu repo ya hace Include(...)
+            return _bookRepository.GetById(id); 
         }
 
-        // Crear libro y devolver DTO consistente
         public BookDto? CreateBook(CreateBookRequest request)
         {
             var book = new Book
@@ -40,11 +39,9 @@ namespace Application.Services
 
             _bookRepository.Add(book);
 
-            // Volver a cargar con relaciones (tu GetById ya incluye Author/Publisher/Category)
             var createdBook = _bookRepository.GetById(book.Id);
             if (createdBook == null) return null;
 
-            // Mapear a DTO
             return new BookDto
             {
                 Id = createdBook.Id,
@@ -83,7 +80,7 @@ namespace Application.Services
             if (book == null || book.IsDeleted)
                 return false;
 
-            _bookRepository.Delete(id); // baja lógica
+            _bookRepository.Delete(id); 
             return true;
         }
     }

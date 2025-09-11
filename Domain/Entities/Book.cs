@@ -18,30 +18,18 @@ namespace Domain.Entities
 
         public int Stock { get; set; }
 
-        public bool IsDeleted { get; set; } = false; //para hacer la baja logica
+        public bool IsDeleted { get; set; } = false; 
 
 
-        // claves foráneas
         public int AuthorId { get; set; }
         public int PublisherId { get; set; }
         public int CategoryId { get; set; }
 
-        // Navigation Properties
         public Author? Author { get; set; }
-        public Publisher? Publisher { get; set; } //esta con '?' para q funcione el dto
+        public Publisher? Publisher { get; set; } 
         public Category? Category { get; set; }
 
         public Book() { }
-
-        public Book(string title, decimal price, int stock, int authorId, int publisherId, int categoryId)
-        {
-            Title = title;
-            Price = price;
-            Stock = stock;
-            AuthorId = authorId;
-            PublisherId = publisherId;
-            CategoryId = categoryId;
-        }
 
     }
 

@@ -61,7 +61,7 @@ public class PublisherRepository : IPublisherRepository
         var publisher = await _context.Publishers.FindAsync(id);
         if (publisher == null) return false;
 
-        publisher.IsDeleted = true; // 🔹 Baja lógica
+        publisher.IsDeleted = true; 
         _context.Publishers.Update(publisher);
 
         return await _context.SaveChangesAsync() > 0;

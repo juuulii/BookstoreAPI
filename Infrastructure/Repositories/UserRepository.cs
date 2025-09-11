@@ -3,8 +3,6 @@ using Domain.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 
-//el contexto se hace en las interfaces?
-
 namespace Infraestructure.Repositories
 {
     public class UserRepository : IUserRepository
@@ -42,7 +40,7 @@ namespace Infraestructure.Repositories
         {
             _context.Users.Add(user);
             _context.SaveChanges();
-            return user.Id; //Devuelve el Id del nuevo usuario.
+            return user.Id; 
         }
 
         public void Delete(int id)

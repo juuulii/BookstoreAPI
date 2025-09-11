@@ -47,16 +47,15 @@ namespace Infraestructure
                 .HasForeignKey(b => b.CategoryId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // relaciones Order -> Book / Cliente
             modelBuilder.Entity<Order>()
                 .HasOne(o => o.Book)
-                .WithMany() // un libro puede estar en varios pedidos
+                .WithMany() 
                 .HasForeignKey(o => o.BookId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Order>()
                 .HasOne(o => o.Cliente)
-                .WithMany() // un cliente puede tener varios pedidos
+                .WithMany() 
                 .HasForeignKey(o => o.ClienteId)
                 .OnDelete(DeleteBehavior.Restrict);
 

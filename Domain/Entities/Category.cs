@@ -17,7 +17,7 @@ namespace Domain.Entities
         public bool IsDeleted { get; set; } = false;
 
         [JsonIgnore]
-        public ICollection<Book> Books { get; set; } = new List<Book>(); //relacion con libros
+        public ICollection<Book> Books { get; set; } = new List<Book>(); 
     }
 }
 

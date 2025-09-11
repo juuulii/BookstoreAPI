@@ -8,7 +8,7 @@ namespace Domain.Interfaces
         Book? GetById(int id);
         void Add(Book book);
         void Update(Book book);
-        void Delete(int id); // baja lógica
+        void Delete(int id); 
     }
 }
 

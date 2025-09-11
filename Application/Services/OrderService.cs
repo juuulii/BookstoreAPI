@@ -22,14 +22,13 @@ namespace Application.Services
             var cliente = await _orderRepository.GetClienteByIdAsync(clienteId);
 
             if (book == null)
-                throw new Exception("El libro no existe o fue eliminado."); // <-- aclaramos el error
+                throw new Exception("El libro no existe o fue eliminado."); 
             if (cliente == null)
                 throw new Exception("El cliente no existe.");
 
             if (book.Stock < cantidad)
                 throw new Exception("No hay suficiente stock para este libro.");
 
-            // Descontar stock
             book.Stock -= cantidad;
             await _orderRepository.UpdateBookAsync(book);
 
@@ -56,8 +55,6 @@ namespace Application.Services
             };
         }
 
-
-        // GET con lista de clientes
         public async Task<List<OrderInfoDto>> GetClientsByBookIdAsync(int bookId)
         {
             var orders = await _orderRepository.GetOrdersByBookIdAsync(bookId);

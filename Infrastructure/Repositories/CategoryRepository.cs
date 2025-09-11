@@ -61,7 +61,7 @@ public class CategoryRepository : ICategoryRepository
         var category = await _context.Categories.FindAsync(id);
         if (category == null) return false;
 
-        category.IsDeleted = true; // 🔹 Baja lógica
+        category.IsDeleted = true; 
         _context.Categories.Update(category);
 
         return await _context.SaveChangesAsync() > 0;

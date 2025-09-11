@@ -19,7 +19,6 @@ namespace BookstoreAPI.Controllers
             _authorService = authorService;
         }
 
-        // GET: api/authors
         [HttpGet]
         [Authorize(Roles = "Admin, Cliente")] 
         public async Task<ActionResult<IEnumerable<AuthorDto>>> GetAuthors([FromQuery] bool includeDeleted = false)
@@ -74,7 +73,6 @@ namespace BookstoreAPI.Controllers
         }
 
 
-        // POST: api/authors
         [HttpPost]
         [Authorize(Roles = "Admin")] 
         public async Task<ActionResult<AuthorDto>> CreateAuthor(CreateAuthorRequest createDto)
@@ -94,7 +92,7 @@ namespace BookstoreAPI.Controllers
                 Name = created.Name,
                 LastName = created.LastName,
                 Nationality = created.Nationality,
-                Books = new List<BookDto>() // recién creado no tiene libros
+                Books = new List<BookDto>() 
             };
 
             return CreatedAtAction(nameof(GetAuthor), new { id = authorDto.Id }, authorDto);

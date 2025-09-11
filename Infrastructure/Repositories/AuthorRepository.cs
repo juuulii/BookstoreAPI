@@ -63,7 +63,7 @@ public class AuthorRepository : IAuthorRepository
         if (author == null)
             return false;
 
-        author.IsDeleted = true; // 🔹 baja lógica
+        author.IsDeleted = true; 
         _context.Authors.Update(author);
 
         return await _context.SaveChangesAsync() > 0;

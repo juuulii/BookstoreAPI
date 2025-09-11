@@ -23,7 +23,7 @@ builder.Configuration["ConnectionStrings:DBConnectionString"], b => b.Migrations
 
 builder.Services.AddSwaggerGen(setupAction =>
 {
-    setupAction.AddSecurityDefinition("ApiBearerAuth", new OpenApiSecurityScheme() //Esto va a permitir usar swagger con el token.
+    setupAction.AddSecurityDefinition("ApiBearerAuth", new OpenApiSecurityScheme() 
     {
         Type = SecuritySchemeType.Http,
         Scheme = "Bearer",
@@ -38,14 +38,14 @@ builder.Services.AddSwaggerGen(setupAction =>
                 Reference = new OpenApiReference
                 {
                     Type = ReferenceType.SecurityScheme,
-                    Id = "ApiBearerAuth" } //Tiene que coincidir con el id seteado arriba en la definici?n
+                    Id = "ApiBearerAuth" } 
                 }, new List<string>()
             }
     });
 });
 
-builder.Services.AddAuthentication("Bearer") //"Bearer" es el tipo de auntenticaci?n que tenemos que elegir despu?s en PostMan para pasarle el token
-    .AddJwtBearer(options => //Ac? definimos la configuraci?n de la autenticaci?n. le decimos qu? cosas queremos comprobar. La fecha de expiraci?n se valida por defecto.
+builder.Services.AddAuthentication("Bearer") 
+    .AddJwtBearer(options => 
     {
         options.TokenValidationParameters = new()
         {
@@ -78,7 +78,6 @@ builder.Services.AddScoped<OrderService>();
 
 var app = builder.Build();
 
-// Middleware global de errores
 app.UseExceptionHandler(errorApp =>
 {
     errorApp.Run(async context =>
@@ -92,14 +91,13 @@ app.UseExceptionHandler(errorApp =>
             var response = new
             {
                 message = "Ocurrió un error inesperado en el servidor.",
-                detail = error.Error.Message // ⚠️ en producción podés quitar esto para no mostrar detalles internos
+                detail = error.Error.Message 
             };
             await context.Response.WriteAsJsonAsync(response);
         }
     });
 });
 
-// Manejo global de códigos de estado (401, 403, 404, etc.)
 app.UseStatusCodePages(async context =>
 {
     var response = context.HttpContext.Response;
